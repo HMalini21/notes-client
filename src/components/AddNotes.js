@@ -25,6 +25,7 @@ export function AddNotes({ handleAdd }) {
     } else {
       setError('write something!!');
     }
+    console.log('saved');
   }
   return (
     <>
@@ -33,10 +34,12 @@ export function AddNotes({ handleAdd }) {
           <textarea
             placeholder="type your text"
             onChange={handleChange}
+            onBlur={() => handleEditContent()}
             value={addNotes}
             rows="8"
             cols="30"
           ></textarea>
+          {error && <span>{error}</span>}
 
           <div className="note-footer">
             <small>{characterLimit - addNotes.length}remaining</small>
@@ -46,7 +49,6 @@ export function AddNotes({ handleAdd }) {
           </div>
         </form>
       </div>
-      {error && <h2>{error}</h2>}
     </>
   );
 }

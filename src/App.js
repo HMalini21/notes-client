@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
 import './App.css';
 import { Noteslist } from './components/Noteslist';
 import { SearchBar } from './components/SearchBar';
 import { Header } from './components/Header';
+import axios from 'axios';
 
 function App() {
-  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem('save-Notes')) || []);
+  const [notes, setNotes] = useState([]);
 
   const [searchNotes, setSearchNotes] = useState('');
 
@@ -20,16 +20,20 @@ function App() {
     }
   }, [darkMode]);
 
-  // useEffect(() => {
-  //   const savedNotes = JSON.parse(localStorage.getItem('save-Notes'));
-  //   if (savedNotes) {
-  //     setNotes(savedNotes);
-  //   }
-  // }, []);
-
+  // get all api call
   useEffect(() => {
-    localStorage.setItem('save-Notes', JSON.stringify(notes));
+    function getAllNotes() {
+      axios
+        .get('http://localhost:1995/notes/getAll')
+        .then((res) => setNotes(res.data))
+        .catch((err) => console.log(err.data));
+    }
+    getAllNotes();
   }, [notes]);
+
+  // useEffect(() => {
+  //   localStorage.setItem('save-Notes', JSON.stringify(notes));
+  // }, [notes]);
 
   useEffect(() => {
     localStorage.setItem('saveThemes', JSON.stringify(darkMode));
@@ -38,17 +42,23 @@ function App() {
   function handleAdd(text) {
     const date = new Date();
     const addnewnotes = {
-      id: nanoid(),
       text: text,
-      date: date.toLocaleDateString(),
     };
-    const newNotes = [...notes, addnewnotes];
-    setNotes(newNotes);
+    axios
+      .post('http://localhost:1995/notes/post', addnewnotes)
+      .then((res) => console.log(res.data, 'posted'))
+      .catch((err) => console.log(err.data));
+    // const newNotes = [...notes, addnewnotes];
+    // setNotes(newNotes);
   }
 
   function handleDel(id) {
     const noteDel = notes.filter((note) => note.id !== id);
-    setNotes(noteDel);
+    axios
+      .delete(`http://localhost:1995/notes/delete/${id}`)
+      .then((res) => console.log(res.data))
+      .catch((res) => res.data);
+    // setNotes(noteDel);
   }
   return (
     <div>
@@ -59,6 +69,7 @@ function App() {
           notes={notes.filter((note) => note.text.toLowerCase().includes(searchNotes))}
           handleAdd={handleAdd}
           handleDel={handleDel}
+          setNotes={setNotes}
         />
       </div>
     </div>
