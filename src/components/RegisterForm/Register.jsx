@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import './Login.css';
 
-export default function Login(props) {
+export default function Register(props) {
   const [name, setName] = useState('');
   const [pass, setPass] = useState('');
 
   function submitUser(e) {
     e.preventDefault();
-    console.log('your logged in');
+    console.log("You're Signed In");
   }
   return (
     <div>
       <form className="wrapper" onClick={submitUser}>
-        <h2>LOGIN</h2>
+        <h2>REGISTER</h2>
         <div className="input-box">
           <input
             value={name}
@@ -38,12 +37,12 @@ export default function Login(props) {
           </label>
           <a href="#">forget password ?</a>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit">SignIn</button>
         <div className="register-link">
           <p>
-            don't have an accout?
-            <a href="#" onClick={() => props.toggleForm('register')}>
-              register
+            already have an accout?
+            <a href="#" onClick={() => props.toggleForm('login')}>
+              Login
             </a>
           </p>
         </div>
